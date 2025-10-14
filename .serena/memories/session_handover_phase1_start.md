@@ -252,19 +252,54 @@ Primary (Teal):
 ## ⚠️ KRITISCHE ENTSCHEIDUNGEN DOKUMENTIERT
 
 ### Architektur-Entscheidungen (mit Thomas abgestimmt)
-1. **Option 2 gewählt**: Hybrid-Architektur
-   - Desktop-App bleibt für Power-User
-   - Neue Web-App für alle User + Mobile
-   - Gemeinsames API-Backend
 
-2. **Design von appointment_plan_api_cl favorisiert**
-   - Modernes Dark Theme
-   - Mobile-First
-   - HTMX für Progressive Enhancement
+#### 1. **Zentrale Datenbank-Architektur gewählt** (14. Oktober 2025) ✅
+**Entscheidung:** Zentrale gehostete PostgreSQL-Datenbank statt Synchronisierung
 
-3. **Keine strukturellen Änderungen ohne Rücksprache**
-   - Alle Architektur-Entscheidungen mit Thomas abstimmen
-   - Erst fragen, dann implementieren
+**Architektur:**
+- PostgreSQL auf Render.com (managed, automatische Backups)
+- Web-API: Direkter DB-Zugriff via PonyORM
+- Desktop-App: Direkter DB-Zugriff via PonyORM (gleiche DB!)
+- Single Source of Truth - keine Synchronisierungs-Logik
+
+**Begründung:**
+- ✅ KEEP IT SIMPLE - keine komplexe Sync-Logik
+- ✅ Immer konsistente Daten für alle Clients
+- ✅ Real-time Updates
+- ✅ Weniger Code, weniger Bugs
+- ✅ Offline-Nutzung nur in seltenen Fällen nötig
+- ✅ Render.com macht automatische Backups
+
+**Nachteile akzeptiert:**
+- Desktop-App benötigt Internet-Verbindung (aber: 99% der Zeit online)
+- Kein Offline-Modus (aber: selten kritisch, Mobile Hotspot als Fallback)
+
+#### 2. **Hybrid-Architektur**: Desktop + Web
+- Desktop-App bleibt für Power-User (OR-Tools Solver)
+- Neue Web-App für alle User + Mobile
+- Gemeinsame zentrale Datenbank
+
+#### 3. **Design von appointment_plan_api_cl favorisiert**
+- Modernes Dark Theme
+- Mobile-First
+- HTMX für Progressive Enhancement
+
+#### 4. **bcrypt statt passlib**
+- Direkte bcrypt-Nutzung (passlib wird nicht mehr gewartet)
+- Password Utilities in `api/utils/password.py`
+
+#### 5. **"actor" → "employee" umbenannt**
+- Treffendere Bezeichnung für Mitarbeiter
+- Durchgehend in Code und Dokumentation
+
+#### 6. **Referenz-Code im /reference Verzeichnis**
+- appointment_plan_api_cl (Design-Vorlage)
+- hcc_plan_api (Feature-Basis)
+- Nur lokal, nicht in Git (siehe .gitignore)
+
+#### 7. **Keine strukturellen Änderungen ohne Rücksprache**
+- Alle Architektur-Entscheidungen mit Thomas abstimmen
+- Erst fragen, dann implementieren
 
 ---
 

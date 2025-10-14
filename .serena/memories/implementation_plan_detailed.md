@@ -927,88 +927,92 @@ Echtzeit-Benachrichtigungen für Tauschvorschläge und Planänderungen.
 ## Phase 9: Desktop-App Integration (Wochen 19-20)
 
 ### Ziel
-Desktop-App (hcc_plan_db_playground) kann Pläne hochladen und Tauschvorschläge abrufen.
+Desktop-App (hcc_plan_db_playground) nutzt dieselbe zentrale PostgreSQL-Datenbank wie die Web-App.
 
-### 9.1 API für Desktop-App (Woche 19)
+**ARCHITEKTUR-ÄNDERUNG (14. Oktober 2025):**
+- ✅ Keine Synchronisierungs-Logik mehr nötig!
+- ✅ Desktop-App nutzt direkte DB-Verbindung
+- ✅ Single Source of Truth - zentrale PostgreSQL-Datenbank
+- ✅ Beide Apps nutzen PonyORM - konsistente Datenzugriffe
+
+### 9.1 Desktop-App Datenbank-Migration (Woche 19)
 
 #### Aufgaben
-- [ ] `api/routes/api/integration/desktop.py` mit Endpoints:
+- [ ] Desktop-App `config.py` anpassen:
   ```python
-  @router.post("/plan-versions")
-  async def upload_plan_version(
-      plan_data: PlanVersionUpload,
-      current_user: User = Depends(get_current_dispatcher)
-  ):
-      # Validierung
-      # Plan-Upload
-      # Status: "draft"
-      pass
+  # Von:
+  DATABASE_URL = "sqlite:///local_plans.db"
   
-  @router.get("/plan-versions/{version_id}/proposals")
-  async def get_proposals_for_version(
-      version_id: UUID,
-      current_user: User = Depends(get_current_dispatcher)
-  ):
-      # Tauschvorschläge für diese Planversion
-      pass
-  
-  @router.put("/plan-versions/{version_id}/sync")
-  async def sync_plan_version(
-      version_id: UUID,
-      sync_data: PlanVersionSync,
-      current_user: User = Depends(get_current_dispatcher)
-  ):
-      # Synchronisiere Änderungen von Desktop-App
+  # Zu:
+  DATABASE_URL = "postgresql://user:password@render.com:5432/hcc_plan_db"
+  ```
+- [ ] PonyORM Entity-Definitionen synchronisieren:
+  - Entities in Desktop-App auf neuesten Stand bringen
+  - Neue Collaboration-Entities hinzufügen (ExchangeProposal, PlanVersion, etc.)
+  - Relationships aktualisieren
+- [ ] Desktop-App Migrations ausführen
+- [ ] Test-Connection zur Production-DB (mit Test-Daten!)
+- [ ] Backup-Strategy dokumentieren
+
+#### Deliverables
+- ✅ Desktop-App nutzt PostgreSQL statt SQLite
+- ✅ Connection zur zentralen DB funktioniert
+- ✅ Entities synchronisiert
+
+### 9.2 Optional: Desktop-spezifische API Endpoints (Woche 20)
+
+**Hinweis:** Da beide Apps dieselbe DB nutzen, sind diese Endpoints optional!
+
+Nur falls Desktop-App spezielle Funktionen via REST API benötigt (z.B. für Authentication):
+
+#### Aufgaben
+- [ ] `api/routes/api/integration/desktop_auth.py` (optional):
+  ```python
+  @router.post("/desktop/auth")
+  async def desktop_authenticate(
+      credentials: DesktopCredentials
+  ) -> DesktopAuthResponse:
+      """
+      Spezielle Auth für Desktop-App (falls nötig).
+      Gibt API-Token zurück.
+      """
       pass
   ```
-- [ ] `api/models/integration.py` mit Schemas
-- [ ] API-Key Authentication für Desktop-App (zusätzlich zu JWT)
+- [ ] API-Key Management für Desktop-App (optional)
+- [ ] Spezielle Desktop-Endpoints nur falls wirklich benötigt
 
 #### Deliverables
-- ✅ Desktop-Integration API funktioniert
-- ✅ Plan-Upload möglich
-- ✅ Tauschvorschläge abrufbar
+- ✅ Optional: Desktop-spezifische Endpoints funktionieren
 
-### 9.2 Desktop-App API Client (Woche 20)
+### 9.3 Desktop-App Testing mit Production-DB (Woche 20)
 
-**Hinweis:** Dies wird im Desktop-Projekt implementiert, nicht hier. Nur zur Dokumentation.
-
-#### Geplante Integration in Desktop-App:
-```python
-# In hcc_plan_db_playground
-# gui/services/api_client.py
-
-class HCCPlanAPIClient:
-    def __init__(self, base_url: str, api_key: str):
-        self.base_url = base_url
-        self.api_key = api_key
-    
-    def upload_plan(self, plan: Plan) -> PlanVersion:
-        response = requests.post(
-            f'{self.base_url}/api/v1/integration/plan-versions',
-            headers={'X-API-Key': self.api_key},
-            json=plan.to_dict()
-        )
-        return PlanVersion(**response.json())
-    
-    def get_proposals(self, version_id: UUID) -> list[ExchangeProposal]:
-        response = requests.get(
-            f'{self.base_url}/api/v1/integration/plan-versions/{version_id}/proposals',
-            headers={'X-API-Key': self.api_key}
-        )
-        return [ExchangeProposal(**p) for p in response.json()]
-```
+#### Aufgaben
+- [ ] OR-Tools Solver mit PostgreSQL testen:
+  - Performance-Vergleich (SQLite vs PostgreSQL)
+  - Latency-Messungen
+  - Große Datensätze testen
+- [ ] Offline-Handling dokumentieren:
+  - Was passiert wenn keine Verbindung?
+  - User-freundliche Fehlermeldungen
+  - Retry-Logik
+- [ ] Integration Tests:
+  - Plan erstellen in Desktop-App
+  - Sofort in Web-App sichtbar?
+  - Tauschvorschlag in Web-App erstellen
+  - Sofort in Desktop-App sichtbar?
 
 #### Deliverables
-- ✅ API Client in Desktop-App
-- ✅ Plan-Upload funktioniert
-- ✅ Tauschvorschläge werden abgerufen
+- ✅ Desktop-App funktioniert mit PostgreSQL
+- ✅ Performance akzeptabel
+- ✅ Offline-Handling dokumentiert
+- ✅ Integration Tests grün
 
 ### Phase 9 Success Criteria
-- [ ] Desktop-App kann Plan hochladen
-- [ ] Web-App empfängt Plan korrekt
-- [ ] Tauschvorschläge werden synchronisiert
-- [ ] Bidirektionale Kommunikation funktioniert
+- [ ] Desktop-App nutzt zentrale PostgreSQL-Datenbank
+- [ ] Beide Apps sehen dieselben Daten in Real-Time
+- [ ] Keine Synchronisierungs-Logik nötig
+- [ ] OR-Tools Solver funktioniert mit PostgreSQL
+- [ ] Performance akzeptabel (Network Latency berücksichtigt)
 
 ---
 

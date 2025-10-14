@@ -54,9 +54,15 @@ Das `hcc_plan_web_unified` Projekt ist eine **moderne, kollaborative Einsatzplan
 **hcc_plan_web_unified** kombiniert die Stärken aller drei Systeme:
 - ✅ Modernes Design (appointment_plan_api_cl)
 - ✅ Vollständige Features (hcc_plan_api + NEU)
-- ✅ Desktop-Integration (hcc_plan_db_playground via API)
+- ✅ Desktop-Integration (hcc_plan_db_playground via **zentrale Datenbank**)
 - ✅ Kollaborative Workflows (NEU)
 - ✅ Mobile-First (NEU)
+
+**Architektur-Entscheidung (14. Oktober 2025):**
+- Zentrale PostgreSQL-Datenbank auf Render.com (managed, automatische Backups)
+- Web-App UND Desktop-App nutzen **dieselbe Datenbank**
+- Keine Synchronisierungs-Logik nötig - Single Source of Truth
+- Real-time Daten-Konsistenz zwischen beiden Apps
 
 ## Use Case: Kollaborativer Planungsprozess
 
@@ -69,8 +75,9 @@ Ein Theater-Team plant die Einsätze für 6 Monate im Voraus:
 
 2. **Erstentwurf (Woche 3)**
    - Planer erstellt Erstentwurf in Desktop-App (OR-Tools Optimierung)
-   - Plan wird via API an Web-App hochgeladen
+   - Plan wird direkt in zentrale DB geschrieben
    - Status: "Entwurf"
+   - **Sofort in Web-App sichtbar** (keine Synchronisierung nötig!)
 
 3. **Review-Phase (Woche 4)**
    - Employees sehen ihre Einsätze im Kalender (Web-App)
@@ -78,10 +85,11 @@ Ein Theater-Team plant die Einsätze für 6 Monate im Voraus:
    - Employees können Tauschvorschläge erstellen
    - CvOs genehmigen/lehnen Tauschvorschläge ab
    - Künstlerische Leitung gibt Präferenzen an
+   - **Alle Änderungen in Echtzeit in beiden Apps sichtbar**
 
 4. **Optimierung (Woche 5)**
-   - Planer sieht genehmigte Tauschvorschläge in Desktop-App
-   - Desktop-App synchronisiert Änderungen
+   - Planer sieht genehmigte Tauschvorschläge **sofort** in Desktop-App
+   - Keine Synchronisierung nötig - beide Apps nutzen dieselbe DB!
    - Finale Optimierung mit allen Constraints
 
 5. **Finalisierung (Woche 6)**
@@ -99,10 +107,12 @@ Ein Theater-Team plant die Einsätze für 6 Monate im Voraus:
 - **Administratoren**: Projektverwaltung und Systemkonfiguration
 
 ## Technologische Vision
-- **API-First**: Alle Features über REST API zugänglich
-- **Real-Time**: WebSocket für sofortige Updates
+- **Zentrale Datenbank**: PostgreSQL als Single Source of Truth (Render.com)
+- **API-First**: REST API für spezielle Features (optional)
+- **Real-Time**: WebSocket für sofortige Updates + direkte DB-Updates
 - **Mobile-First**: Responsive Design mit Touch-Optimierung
 - **Progressive Enhancement**: Funktioniert auch ohne JavaScript (HTMX)
 - **Type-Safe**: Pydantic Schemas für alle API-Contracts
 - **Testable**: Umfangreiche Test-Coverage
 - **Dokumentiert**: OpenAPI/Swagger Docs für alle Endpoints
+- **KEEP IT SIMPLE**: Keine komplexe Synchronisierungs-Logik - direkte DB-Verbindung

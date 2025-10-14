@@ -32,13 +32,16 @@
   - Generator-basierte Queries
   - Automatic Query Optimization
   - Database-agnostic (SQLite/PostgreSQL)
-- **SQLite** - Entwicklungsdatenbank
-  - File-based für einfaches Setup
-  - WAL-Mode für Multi-User Support
-- **PostgreSQL** - Produktionsdatenbank
+- **PostgreSQL** - Zentrale Produktionsdatenbank
+  - **WICHTIG**: Beide Apps (Web + Desktop) nutzen dieselbe DB!
+  - Gehostet auf Render.com (managed, automatische Backups)
+  - Single Source of Truth - keine Synchronisierung
   - Robustheit und Skalierbarkeit
   - Advanced Features (JSON, Arrays)
   - ACID Compliance
+- **SQLite** - Nur für lokale Entwicklung/Testing
+  - File-based für einfaches Setup
+  - Nicht für Production!
 
 ## Authentication & Security
 - **Python-JOSE** - JWT Token-Handling
@@ -106,21 +109,29 @@
   - Dependencies Management
 
 ## Deployment & Infrastructure
+- **Render.com** - Hosting Platform
+  - PostgreSQL Database (managed, automatische Backups)
+  - Web Service Hosting (FastAPI App)
+  - Automatisches Deployment via Git
+  - SSL/HTTPS out-of-the-box
+  - Health Checks und Monitoring
 - **Docker** - Containerization (optional)
   - Multi-Stage Builds
   - Development & Production Images
-- **Nginx** - Reverse Proxy (optional)
+- **Nginx** - Reverse Proxy (optional bei Render.com)
   - Static File Serving
   - Load Balancing
-- **Systemd** - Service Management (Linux)
-  - Auto-Start
-  - Process Monitoring
 
-## Integration mit Desktop-App
-- **REST API Client** - Python requests
-  - Plan-Upload von Desktop-App
-  - Synchronisation von Tauschvorschlägen
-  - Bidirektionale Kommunikation
+## Integration mit Desktop-App (hcc_plan_db_playground)
+- **Direkte Datenbank-Verbindung** - PostgreSQL
+  - Desktop-App nutzt DIESELBE zentrale PostgreSQL-Datenbank
+  - Keine Synchronisierungs-Logik nötig!
+  - PonyORM in beiden Apps für konsistente Datenzugriffe
+  - OR-Tools Solver läuft lokal in Desktop-App
+  - Connection String: PostgreSQL auf Render.com
+- **Optional: REST API** - Für spezielle Desktop-Features
+  - Authentifizierung via API (falls nötig)
+  - Spezielle Endpoints für Desktop-spezifische Operationen
 
 ## Monitoring & Logging
 - **Python Logging** - Standard Library
