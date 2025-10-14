@@ -382,6 +382,21 @@ async def get_appointments(
 
 ## Security Best Practices
 
+### Password Hashing
+```python
+# Gut - Direkt mit bcrypt arbeiten
+import bcrypt
+
+# Password hashen
+password_bytes = password.encode('utf-8')
+hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
+
+# Password verifizieren
+is_valid = bcrypt.checkpw(password_bytes, hashed)
+
+# WICHTIG: bcrypt verwenden, NICHT passlib (wird nicht mehr gewartet)
+```
+
 ### Nie Passwörter loggen
 ```python
 # Gut

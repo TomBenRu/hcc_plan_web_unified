@@ -9,7 +9,7 @@ Das `hcc_plan_web_unified` Projekt ist eine **moderne, kollaborative Einsatzplan
 
 ## Hauptfunktionen
 
-### Für Actors (Mitarbeiter)
+### Für Employees (Mitarbeiter)
 - **Einsatzplan-Kalenderansicht**: Übersicht aller eigenen Einsätze
 - **Verfügbarkeitserfassung**: Eingabe von Verfügbarkeiten für Planperioden
 - **Tauschbörse**: Vorschlagen und Verwalten von Einsatztausch mit Kollegen
@@ -42,7 +42,7 @@ Das `hcc_plan_web_unified` Projekt ist eine **moderne, kollaborative Einsatzplan
    - Verfügbarkeitserfassung funktioniert gut
    - Rollenbasierte Auth
    - APScheduler für Automatisierung
-   - Problem: Veraltetes Design, keine Einsatzplan-Ansicht für Actors
+   - Problem: Veraltetes Design, keine Einsatzplan-Ansicht für Employees
 
 3. **appointment_plan_api_cl** (Web-App v2 - Studie)
    - Modernes Design mit Tailwind CSS
@@ -64,7 +64,7 @@ Das `hcc_plan_web_unified` Projekt ist eine **moderne, kollaborative Einsatzplan
 Ein Theater-Team plant die Einsätze für 6 Monate im Voraus:
 
 1. **Verfügbarkeitserfassung (Woche 1-2)**
-   - Actors geben ihre Verfügbarkeiten in der Web-App ein
+   - Employees geben ihre Verfügbarkeiten in der Web-App ein
    - Deadline wird per E-Mail erinnert (APScheduler)
 
 2. **Erstentwurf (Woche 3)**
@@ -73,9 +73,9 @@ Ein Theater-Team plant die Einsätze für 6 Monate im Voraus:
    - Status: "Entwurf"
 
 3. **Review-Phase (Woche 4)**
-   - Actors sehen ihre Einsätze im Kalender (Web-App)
+   - Employees sehen ihre Einsätze im Kalender (Web-App)
    - CvOs prüfen Besetzung ihrer Einrichtungen
-   - Actors können Tauschvorschläge erstellen
+   - Employees können Tauschvorschläge erstellen
    - CvOs genehmigen/lehnen Tauschvorschläge ab
    - Künstlerische Leitung gibt Präferenzen an
 
@@ -88,10 +88,10 @@ Ein Theater-Team plant die Einsätze für 6 Monate im Voraus:
    - Plan wird als "Final" markiert
    - Alle erhalten E-Mail-Benachrichtigung
    - Plan ist verbindlich
-   - Actors sehen finalen Einsatzplan in Web-App
+   - Employees sehen finalen Einsatzplan in Web-App
 
 ## Zielgruppe
-- **Actors/Klinikclowns**: Freiberufliche Mitarbeiter, oft unterwegs, benötigen mobile Zugriff
+- **Employees/Klinikclowns**: Freiberufliche Mitarbeiter, oft unterwegs, benötigen mobile Zugriff
 - **CvOs (Chief-Verantwortliche)**: Teamleiter für bestimmte Einrichtungen
 - **Dispatcher**: Koordinieren Teams und Planungsprozesse
 - **Planer**: Erstellen komplexe Pläne mit OR-Tools

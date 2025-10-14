@@ -1,6 +1,91 @@
 [project]
 name = "hcc-plan-web-unified"
 version = "0.1.0"
-description = "Add your description here"
+description = "HCC Plan Web Unified - Kollaborative Einsatzplanungs-Webapplikation für Theater-Teams"
+readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+authors = [
+    { name = "Thomas", email = "your-email@example.com" }
+]
+keywords = ["fastapi", "planning", "scheduling", "theater", "collaboration"]
+
+dependencies = [
+    # Web Framework
+    "fastapi>=0.119.0",
+    "uvicorn[standard]>=0.37.0",
+    "python-multipart>=0.0.9",
+    
+    # Data Validation
+    "pydantic>=2.4.2",
+    "pydantic-settings>=2.0.3",
+    
+    # Database
+    "pony>=0.7",
+    
+    # Authentication
+    "python-jose[cryptography]>=3.3.0",
+    "bcrypt>=5.0",
+    
+    # Templates
+    "jinja2>=3.1",
+    
+    # Scheduling
+    "apscheduler>=3.10",
+    
+    # Email
+    "aiosmtplib>=3.0.1",
+    
+    # Utils
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "pytest-cov>=4.1.0",
+    "httpx>=0.25.1",
+    
+    # Code Quality
+    "black>=23.11.0",
+    "isort>=5.12.0",
+    "mypy>=1.7.0",
+    "ruff>=0.1.6",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | __pycache__
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip_gitignore = true
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"

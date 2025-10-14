@@ -85,7 +85,7 @@ hcc_plan_web_unified/
 │   │   │   ├── auth.py         # Web Authentication Routes
 │   │   │   ├── index.py        # Landing Page
 │   │   │   │
-│   │   │   ├── actor/          # Actor-specific Views
+│   │   │   ├── employee/          # employee-specific Views
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── calendar.py # Einsatzplan-Kalender
 │   │   │   │   ├── availability.py # Verfügbarkeitserfassung
@@ -198,7 +198,7 @@ hcc_plan_web_unified/
 │   │   ├── pagination.html
 │   │   └── loading_spinner.html
 │   │
-│   ├── actor/                  # Actor Templates
+│   ├── employee/                  # employee Templates
 │   │   ├── calendar.html       # Kalenderansicht
 │   │   ├── calendar_partial.html # HTMX Partial
 │   │   ├── availability.html   # Verfügbarkeitserfassung
@@ -245,7 +245,7 @@ hcc_plan_web_unified/
 │   │       └── test_database_integration.py
 │   │
 │   └── e2e/                    # End-to-End Tests
-│       ├── test_actor_workflow.py
+│       ├── test_employee_workflow.py
 │       ├── test_cvo_workflow.py
 │       └── test_collaboration_workflow.py
 │
@@ -321,7 +321,7 @@ Environment Variables:
 ### Directories
 - **Lowercase mit Unterstrichen**: `exchange_proposals/`
 - **Plural für Kollektionen**: `services/`, `models/`, `routes/`
-- **Hierarchisch organisiert**: `routes/web/actor/`
+- **Hierarchisch organisiert**: `routes/web/employee/`
 
 ### Files
 - **Lowercase mit Unterstrichen**: `exchange_proposal_service.py`
@@ -397,7 +397,7 @@ async def create_exchange_proposal(...):
 
 ### 7. Template erstellen
 ```html
-<!-- templates/actor/exchange_proposal_modal.html -->
+<!-- templates/employee/exchange_proposal_modal.html -->
 ```
 
 ### 8. Integration testen

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Termin- und Einsatzplanung - Startseite{% endblock %}
+
+{% block content %}
+<div class="py-12">
+    {% include "landing_page_sections/hero.html" %}
+
+    <!-- Main Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-6xl mx-auto px-4">
+        {% include "landing_page_sections/cards/calendar_card.html" %}
+        {% include "landing_page_sections/cards/planning_card.html" %}
+    </div>
+    
+    {% include "landing_page_sections/features.html" %}
+    {% include "landing_page_sections/user_stats.html" %}
+</div>
+{% endblock %}

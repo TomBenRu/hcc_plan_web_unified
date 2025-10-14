@@ -135,7 +135,7 @@ def test_create_exchange_proposal_invalid_appointment_raises_error():
 ```python
 # Gut - Prefetch verwenden
 @db_session
-def get_proposals_with_actors():
+def get_proposals_with_employees():
     return select(p for p in ExchangeProposal).prefetch(
         ExchangeProposal.proposer,
         ExchangeProposal.appointment_offered
@@ -171,12 +171,18 @@ def create_proposal_with_notification(...):
 
 ### Password Handling
 ```python
-# Gut
-from passlib.context import CryptContext
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-hashed = pwd_context.hash(password)
+# Gut - Direkt mit bcrypt arbeiten
+import bcrypt
+
+# Password hashen
+password_bytes = password.encode('utf-8')
+hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
+
+# Password verifizieren
+is_valid = bcrypt.checkpw(password_bytes, hashed)
 
 # Schlecht - NIEMALS Plaintext Passwords speichern!
+# WICHTIG: bcrypt verwenden, NICHT passlib (wird nicht mehr gewartet)
 ```
 
 ### SQL Injection Prevention
@@ -369,12 +375,12 @@ def create_exchange_proposal(
     Erstellt einen neuen Tauschvorschlag.
     
     Validiert:
-    - Proposer ist Actor in dem Team
+    - Proposer ist Employee in dem Team
     - Appointment gehört zu Proposer
     - Appointment ist nicht bereits getauscht
     
     Args:
-        proposer_id: ID des vorschlagenden Actors
+        proposer_id: ID des vorschlagenden Employees
         appointment_offered_id: ID des angebotenen Einsatzes
         
     Returns:

@@ -8,7 +8,7 @@ Dieses Dokument beschreibt den vollständigen Implementierungsplan für die Entw
 - Modernes, mobile-first Web-Interface
 - Kollaborative Planungsworkflows (Tauschvorschläge, Review-Prozesse)
 - Integration mit bestehender Desktop-App für komplexe Planung
-- Verbesserte User Experience für alle Rollen (Actors, CvOs, Dispatcher)
+- Verbesserte User Experience für alle Rollen (employees, CvOs, Dispatcher)
 
 **Zeitrahmen:** 22 Wochen (ca. 5.5 Monate) für MVP + Full Feature Set
 - **MVP**: 12 Wochen (3 Monate)
@@ -43,7 +43,7 @@ Projektgrundlage schaffen mit korrektem Setup und Infrastruktur.
       "pydantic-settings>=2.0.0",
       "pony>=0.7.16",
       "python-jose>=3.3.0",
-      "passlib[bcrypt]>=1.7.4",
+      "bcrypt>=5.0.0",
       "python-multipart>=0.0.6",
       "email-validator>=2.1.0",
       "jinja2>=3.1.2",
@@ -303,7 +303,7 @@ Unified Database Schema erstellen mit allen Entities aus allen drei Projekten.
 - [ ] `database/models/availability.py`:
   ```python
   class Availables(db.Entity):
-      """Verfügbarkeit eines Actors für eine Planperiode"""
+      """Verfügbarkeit eines employees für eine Planperiode"""
       id = PrimaryKey(UUID, auto=True)
       person = Required('Person')
       plan_period = Required('PlanPeriod')
@@ -422,7 +422,7 @@ Vollständiges Auth-System mit JWT und rollenbasierter Zugriffskontrolle.
       return encoded_jwt
   ```
 - [ ] `api/auth/cookie_auth.py` für Cookie-based Auth
-- [ ] Password Hashing mit passlib/bcrypt
+- [ ] Password Hashing mit bcrypt
 - [ ] `api/models/auth.py` mit Login/Register Schemas:
   ```python
   class UserLogin(BaseModel):
@@ -456,7 +456,7 @@ Vollständiges Auth-System mit JWT und rollenbasierter Zugriffskontrolle.
       ADMIN = "admin"
       DISPATCHER = "dispatcher"
       CVO = "cvo"
-      ACTOR = "actor"
+      EMPLOYEE = "employee"
   
   def require_role(required_roles: list[Role]):
       async def role_checker(
@@ -479,10 +479,10 @@ Vollständiges Auth-System mit JWT und rollenbasierter Zugriffskontrolle.
       # User lookup
       return user
   
-  async def get_current_actor(
+  async def get_current_employee(
       current_user: User = Depends(get_current_user)
   ):
-      if current_user.role != Role.ACTOR:
+      if current_user.role != Role.EMPLOYEE:
           raise HTTPException(403)
       return current_user
   
@@ -507,7 +507,7 @@ Vollständiges Auth-System mit JWT und rollenbasierter Zugriffskontrolle.
 ## Phase 4: Verfügbarkeitserfassung (Wochen 9-10)
 
 ### Ziel
-Actors können ihre Verfügbarkeiten für Planperioden eingeben (Feature von hcc_plan_api).
+employees können ihre Verfügbarkeiten für Planperioden eingeben (Feature von hcc_plan_api).
 
 ### 4.1 Verfügbarkeits-API (Woche 9)
 
@@ -547,7 +547,7 @@ Actors können ihre Verfügbarkeiten für Planperioden eingeben (Feature von hcc
 ### 4.2 Verfügbarkeits-UI (Woche 10)
 
 #### Aufgaben
-- [ ] `templates/actor/availability.html` mit Kalenderansicht
+- [ ] `templates/employee/availability.html` mit Kalenderansicht
 - [ ] HTMX für Interaktivität:
   ```html
   <button 
@@ -566,12 +566,12 @@ Actors können ihre Verfügbarkeiten für Planperioden eingeben (Feature von hcc
   @db_session
   def send_availability_reminders():
       # Finde alle offenen PlanPeriods mit Deadline < 7 Tage
-      # Sende Reminder an Actors ohne Verfügbarkeit
+      # Sende Reminder an employees ohne Verfügbarkeit
       pass
   ```
 
 #### Deliverables
-- ✅ Actors können Verfügbarkeit eingeben
+- ✅ Employees können Verfügbarkeit eingeben
 - ✅ Mobile-responsive
 - ✅ Reminder-E-Mails funktionieren
 
@@ -586,7 +586,7 @@ Actors können ihre Verfügbarkeiten für Planperioden eingeben (Feature von hcc
 ## Phase 5: Einsatzplan-Kalender (Wochen 11-12)
 
 ### Ziel
-Actors sehen ihre Einsätze in moderner Kalenderansicht (Design von appointment_plan_api_cl).
+Employees sehen ihre Einsätze in moderner Kalenderansicht (Design von appointment_plan_api_cl).
 
 ### 5.1 Calendar Service & API (Woche 11)
 
@@ -596,7 +596,7 @@ Actors sehen ihre Einsätze in moderner Kalenderansicht (Design von appointment_
   class CalendarService:
       @staticmethod
       @db_session
-      def get_actor_appointments(
+      def get_employee_appointments(
           person_id: UUID,
           start_date: date,
           end_date: date
@@ -612,7 +612,7 @@ Actors sehen ihre Einsätze in moderner Kalenderansicht (Design von appointment_
           # Baut Kalender-Matrix für UI
           pass
   ```
-- [ ] `api/routes/web/actor/calendar.py` mit Routes
+- [ ] `api/routes/web/employee/calendar.py` mit Routes
 - [ ] Filter-Funktionalität (Person, Location)
 
 #### Deliverables
@@ -622,8 +622,8 @@ Actors sehen ihre Einsätze in moderner Kalenderansicht (Design von appointment_
 ### 5.2 Calendar UI (Woche 12)
 
 #### Aufgaben
-- [ ] `templates/actor/calendar.html` von appointment_plan_api_cl portieren
-- [ ] `templates/actor/calendar_partial.html` für HTMX Updates
+- [ ] `templates/employee/calendar.html` von appointment_plan_api_cl portieren
+- [ ] `templates/employee/calendar_partial.html` für HTMX Updates
 - [ ] Color-Coding für Locations (colorUtils.js)
 - [ ] Modal für Appointment Details:
   ```html
@@ -643,7 +643,7 @@ Actors sehen ihre Einsätze in moderner Kalenderansicht (Design von appointment_
 - ✅ Mobile-optimiert
 
 ### Phase 5 Success Criteria
-- [ ] Actors sehen ihre Einsätze im Kalender
+- [ ] Employees sehen ihre Einsätze im Kalender
 - [ ] Filter nach Person/Location funktioniert
 - [ ] Detail-Modal zeigt alle Infos
 - [ ] Navigation flüssig und responsive
@@ -667,7 +667,7 @@ Actors sehen ihre Einsätze in moderner Kalenderansicht (Design von appointment_
 ## Phase 6: Collaboration - Tauschvorschläge (Wochen 13-14)
 
 ### Ziel
-Actors können Einsätze tauschen und CvOs können genehmigen.
+Employees können Einsätze tauschen und CvOs können genehmigen.
 
 ### 6.1 Exchange Proposal Service & API (Woche 13)
 
@@ -703,14 +703,14 @@ Actors können Einsätze tauschen und CvOs können genehmigen.
       def approve_proposal(proposal_id: UUID, cvo_id: UUID):
           # Genehmigung
           # Einsatz tauschen
-          # Notification an Actor
+          # Notification an Employee
           pass
   
       @staticmethod
       @db_session
       def reject_proposal(proposal_id: UUID, cvo_id: UUID, reason: str):
           # Ablehnung
-          # Notification an Actor
+          # Notification an Employee
           pass
   ```
 - [ ] `api/routes/api/collaboration/exchange_proposals.py` mit CRUD
@@ -724,22 +724,22 @@ Actors können Einsätze tauschen und CvOs können genehmigen.
 ### 6.2 Exchange Proposal UI (Woche 14)
 
 #### Aufgaben
-- [ ] `templates/actor/exchange_proposal_modal.html`:
+- [ ] `templates/employee/exchange_proposal_modal.html`:
   - "Ich biete an" zeigt current Appointment
   - "Ich möchte" Dropdown mit verfügbaren Appointments
   - Nachricht an CvO Textarea
   - Submit Button
 - [ ] "Tauschen"-Button in Calendar View
-- [ ] Tauschvorschläge-Liste für Actor (eigene Vorschläge)
+- [ ] Tauschvorschläge-Liste für Employee (eigene Vorschläge)
 - [ ] Status-Anzeige (pending, approved, rejected)
 
 #### Deliverables
-- ✅ Actors können Tauschvorschläge erstellen
+- ✅ Employees können Tauschvorschläge erstellen
 - ✅ UI intuitiv und mobile-friendly
 - ✅ Status wird korrekt angezeigt
 
 ### Phase 6 Success Criteria
-- [ ] Actor kann Tauschvorschlag erstellen
+- [ ] Employee kann Tauschvorschlag erstellen
 - [ ] CvO erhält Notification
 - [ ] Status wird korrekt getrackt
 - [ ] E-Mail-Benachrichtigungen funktionieren
@@ -791,7 +791,7 @@ CvOs haben Dashboard zur Verwaltung von Tauschvorschlägen und Team-Verfügbarke
 
 #### Aufgaben
 - [ ] `templates/cvo/dashboard.html` (siehe Design im Implementierungsplan)
-- [ ] Statistik-Cards (Offene Vorschläge, Verfügbare Actors, etc.)
+- [ ] Statistik-Cards (Offene Vorschläge, Verfügbare Employees, etc.)
 - [ ] Tauschvorschläge-Liste mit Approve/Reject Buttons:
   ```html
   <button 
@@ -1045,8 +1045,8 @@ Finalisierung, Testing, Performance-Optimierung, Dokumentation.
 - [ ] Unit Tests für alle Services (80%+ Coverage)
 - [ ] Integration Tests für API Endpoints
 - [ ] E2E Tests für kritische User Flows:
-  - Actor: Verfügbarkeit eingeben
-  - Actor: Tauschvorschlag erstellen
+  - Employee: Verfügbarkeit eingeben
+  - Employee: Tauschvorschlag erstellen
   - CvO: Tauschvorschlag genehmigen
   - Desktop: Plan hochladen
 - [ ] API Documentation (OpenAPI/Swagger) vervollständigen

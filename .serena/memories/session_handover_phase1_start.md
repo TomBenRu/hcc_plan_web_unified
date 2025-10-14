@@ -39,7 +39,7 @@ Entwicklung einer **modernen, kollaborativen Einsatzplanungs-Webapplikation** f�
 - Mit Desktop-App integriert (von `hcc_plan_db_playground`)
 
 ### Hauptfunktionen
-**Für Actors (Mitarbeiter):**
+**Für Employees (Mitarbeiter):**
 - Einsatzplan-Kalenderansicht
 - Verfügbarkeitserfassung
 - Tauschbörse für Einsätze
@@ -107,7 +107,7 @@ Entwicklung einer **modernen, kollaborativen Einsatzplanungs-Webapplikation** f�
 - Uvicorn >= 0.24.0
 - Pydantic >= 2.4.2
 - PonyORM >= 0.7.16
-- python-jose, passlib[bcrypt]
+- python-jose, bcrypt
 - jinja2, APScheduler
 - pytest, black, isort, mypy (dev dependencies)
 
@@ -273,8 +273,8 @@ Primary (Teal):
 ### Must-Have Features:
 - ✅ Modernes Design (Dark Theme, Tailwind)
 - ✅ Authentication & Authorization
-- ✅ Verfügbarkeitserfassung für Actors
-- ✅ Einsatzplan-Kalenderansicht für Actors
+- ✅ Verfügbarkeitserfassung für Employees
+- ✅ Einsatzplan-Kalenderansicht für Employees
 - ✅ E-Mail-Benachrichtigungen
 - ✅ Mobile-responsive
 

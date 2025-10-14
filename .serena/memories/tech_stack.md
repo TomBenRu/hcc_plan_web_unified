@@ -44,7 +44,7 @@
 - **Python-JOSE** - JWT Token-Handling
   - Access Token Generation
   - Token Validation
-- **Passlib[bcrypt]** >= 1.7.4 - Password Hashing
+- **bcrypt** >= 1.7.4 - Password Hashing
   - Bcrypt für sichere Passwort-Speicherung
 - **Python-Multipart** >= 0.0.6 - Multipart Form-Handling
 - **Email-Validator** >= 2.1.0 - E-Mail-Validierung
